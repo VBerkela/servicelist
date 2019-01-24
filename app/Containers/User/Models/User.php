@@ -7,6 +7,9 @@ use App\Containers\Payment\Contracts\ChargeableInterface;
 use App\Containers\Payment\Models\PaymentAccount;
 use App\Containers\Payment\Traits\ChargeableTrait;
 use App\Ship\Parents\Models\UserModel;
+use App\Containers\User\Tasks\FindUserByIdTask;
+use App\Containers\Authorization\Tasks\AssignUserToRoleTask;
+
 
 /**
  * Class User.
@@ -25,6 +28,23 @@ class User extends UserModel implements ChargeableInterface
      * @var string
      */
     protected $table = 'users';
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Model|null $roleName
+     * @return bool
+     */
+    public function is($roleName)
+    {
+        $roles = $this->roles()->get();
+        foreach ($roles as $role) {
+
+            if ($role->name == $roleName) {
+                return true;
+            }
+        }
+        return false;
+
+    }
 
     /**
      * The attributes that are mass assignable.
